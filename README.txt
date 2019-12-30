@@ -29,14 +29,14 @@ Windows
 
 You will need either:
 
-	* Visual Studio* 2013
+	* Visual Studio* 2019
 	-or-
 	* The Intel compiler, if you plan on using an older version of VS
 	
 Steps:
 
 1.	Open drng.sln in Visual Studio
-2.	Build the drng project first to generate the library drng.lib
+2.	Build the drng project first to generate the library libdrng.dll
 3.	Build the test project to generate test.exe
 4.	Execute test.exe from Windows Command Prompt
 
@@ -47,6 +47,7 @@ You will need either gcc* or the Intel compiler.
 
 $ ./configure
 $ make
+$ make install
 
 And then execute ./test
 
@@ -57,6 +58,7 @@ You will need to install Xcode*.
 
 $ ./configure
 $ make
+$ make install
 
 And then execute ./test
 
