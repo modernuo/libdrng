@@ -1,0 +1,62 @@
+SRCS := rdrand.o rdseed.o
+OBJS := $(addsuffix .o,$(basename $(SRCS)))
+SRCDIR := $(dir $(lastword $(MAKEFILE_LIST)))
+OBJDIR ?= ./
+OBJS := $(addprefix $(OBJDIR),$(OBJS))
+PREFIX?=/usr/local
+LIBDIR?=$(PREFIX)/lib
+
+PACKAGE_NAME=@PACKAGE_NAME@
+PACKAGE_VERSION=@PACKAGE_VERSION@
+CC:=@CC@
+CFLAGS:=@CFLAGS@ -O2
+AR?=ar
+
+SLIB := $(PACKAGE_NAME).a
+
+UNAME := $(shell uname)
+ifeq ($(UNAME),Darwin)
+	DYLIB := $(PACKAGE_NAME).dylib
+else
+	DYLIB := $(PACKAGE_NAME).so
+endif
+
+vpath %.c $(SRCDIR)
+vpath %.h $(SRCDIR)
+
+MANDATORY_FLAGS := -Wall -Wextra -Wno-missing-field-initializers -fPIC
+override CFLAGS := $(MANDATORY_FLAGS) $(CFLAGS)
+
+all: package
+
+objects: $(OBJS)
+package: $(SLIB) $(DYLIB)
+
+$(SLIB): $(OBJS)
+	mkdir -p out
+	$(AR) rcs out/$@ $^
+
+$(DYLIB): $(OBJS)
+ifeq ($(UNAME),Darwin)
+	$(CC) -dynamiclib $^ -o out/$@
+else
+	$(CC) -shared -Wl,-soname,$@ -o out/$@ $^
+endif
+
+$(OBJS): | $(OBJDIR)
+
+$(OBJDIR):
+	mkdir -p $@
+
+$(OBJDIR)%.o: %.c
+	$(CC) $(CFLAGS) $(TARGET_ARCH) -c -o $@ $<
+
+install:
+	cp -f out/$(SLIB) $(LIBDIR)/$(SLIB)
+	cp -f out/$(DYLIB) $(LIBDIR)/$(DYLIB)
+ifeq ($(UNAME),Linux)
+	ldconfig
+endif
+
+clean:
+	$(RM) $out/$(DYLIB) out/$(SLIB) $(OBJS)

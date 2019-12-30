@@ -1,0 +1,11 @@
+.idea/
+.vs/
+
+/out
+/x64
+/x86
+
+config.h
+config.log
+config.status
+Makefile

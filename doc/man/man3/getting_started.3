@@ -1,0 +1,42 @@
+.TH "getting_started" 3 "Thu Jul 16 2015" "DRNG Library" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+getting_started \- Getting Started 
+For ease of use, this library is distributed with static libraries for Microsoft* Windows* and Microsoft* Visual Studio*, Linux Ubuntu* 14\&.10, and OS X* Mavericks*\&. The library can also be built from source, and requires the Visual Studio with the Intel(r) C++ Compiler or Visual Studio 2013 on Windows, or GNU* gcc* on Linux and OS X*\&. See the Building section for more details\&.
+.PP
+Once the static library is compiled, it is simply a matter of linking in the library with your code and including the header in the header search path to use the library\&. Linking the static library is beyond the scope of this documentation, but for demonstration, a simple Microsoft* Visual Studio* project is included, named test, as well as a simple project with Makefile for Linux or OS X\&. Source for the test is in main\&.c, and the test project on Linux can uses the top-level Makefile\&. The rdrand\&.sln solution includes the test project\&.
+.PP
+Rdrand is only supported on 3rd generation Intel(r) Core processors and beyond, and Rdseed is only supported on 5th generation Intel(r) Core processors and Core M processors and beyond\&. It makes sense to determine whether or not these instructions are supported by the CPU and this is done by examining the appropriate feature bits after calling cpuid\&. To ease use the library automatically handles this, and stores the results internally and transparently to the end user of the library\&. This result is stored in global data, and is thread-safe, given that if one thread of execution supports rdrand, they all will\&. Users may find it more practical, however, to call the \fBRdRand_isSupported()\fP and \fBRdSeed_isSupported()\fP functions when managing multiple potential code paths in an application\&.
+.PP
+The API was designed to be as simple and easy-to-use as possible, and consists of these functions:
+.PP
+.PP
+.nf
+int rdrand_16(uint16_t* x, int retry);
+int rdrand_32(uint32_t* x, int retry);
+int rdrand_64(uint64_t* x, int retry);
+
+int rdseed_16(uint16_t* x, int retry_count);
+int rdseed_32(uint32_t* x, int retry_count);
+int rdseed_64(uint64_t* x, int retry_count);
+
+int rdrand_get_n_64(unsigned int n, uint64_t* x);
+int rdrand_get_n_32(unsigned int n, uint32_t* x);
+
+int rdseed_get_n_64(unsigned int n, uint64_t* x, unsigned int skip, int max_retries);
+int rdseed_get_n_32(unsigned int n, uint32_t* x, unsigned int skip, int max_retries);
+
+int rdrand_get_bytes(unsigned int n, unsigned char *buffer);
+
+int rdseed_get_bytes(unsigned int n, unsigned char *buffer, unsigned into skip, int max_retries);
+.fi
+.PP
+.PP
+Each function calls rdrand or rdseed internally for a specific data-size of random data to return to the caller\&.
+.PP
+The return of these functions states the hardware was not ready (if non-retry specified), success, or that the host hardware doesn't support the desired instruction at all\&. Please see the define documentation for details on these defines\&.
+.PP
+Copyright(C) 2015 Intel Corporation\&. All rights reserved\&.
+.PP
+\fC*\fP Other names and brands may be claimed as the property of others 

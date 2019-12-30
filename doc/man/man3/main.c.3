@@ -1,0 +1,55 @@
+.TH "C:/Users/johnm/Documents/For ProtexIP/libdrng-1.0/main.c" 3 "Thu Jul 16 2015" "DRNG Library" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/johnm/Documents/For ProtexIP/libdrng-1.0/main.c \- Test Program to demonstrate DRNG Lib\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include 'drng\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBBUFFSIZE\fP   1275"
+.br
+.ti -1c
+.RI "#define \fBRDSEED_CUTOFF\fP   10"
+.br
+.ti -1c
+.RI "#define \fBRDRAND_CUTOFF\fP   10"
+.br
+.ti -1c
+.RI "#define \fBMAX_RETRY_LIMIT\fP   75"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBmain\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Test Program to demonstrate DRNG Lib\&. 
+
+This is the main file of the test project\&. It demonstrates the use of different APIs for RDSEED and RDRAND\&. 
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define MAX_RETRY_LIMIT   75"
+Maximum number of rdseed retries when nesting multiple calls to rdseed in a wrapper function\&. 
+.SS "#define RDRAND_CUTOFF   10"
+Minimum number of RDRAND results required 
+.SS "#define RDSEED_CUTOFF   10"
+Minimum number of RDSEED results required 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for DRNG Library from the source code\&.

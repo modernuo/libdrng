@@ -1,0 +1,188 @@
+.TH "C:/Users/johnm/Documents/For ProtexIP/libdrng-1.0/rdseed.c" 3 "Thu Jul 16 2015" "DRNG Library" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/johnm/Documents/For ProtexIP/libdrng-1.0/rdseed.c \- APIs for rdseed library\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'drng\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBRDSEED_MASK\fP   0x40000"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef uint32_t \fB_wordlen_t\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBRdSeed_cpuid\fP ()"
+.br
+.RI "\fIQueries cpuid to see if rdseed is supported and caches the result\&. \fP"
+.ti -1c
+.RI "int \fBRdSeed_isSupported\fP ()"
+.br
+.RI "\fIDetermines whether or not rdseed is supported by the CPU\&. \fP"
+.ti -1c
+.RI "int \fBrdseed_16\fP (uint16_t *x, int retry_count)"
+.br
+.RI "\fICalls rdseed for a 16-bit result\&. \fP"
+.ti -1c
+.RI "int \fBrdseed_32\fP (uint32_t *x, int retry_count)"
+.br
+.RI "\fICalls rdseed for a 32-bit result\&. \fP"
+.ti -1c
+.RI "int \fBrdseed_get_n_32\fP (unsigned int n, uint32_t *dest, unsigned int skip, unsigned int max_retries)"
+.br
+.RI "\fICalls rdseed to obtain multiple 32-byte results\&. \fP"
+.ti -1c
+.RI "int \fBrdseed_get_bytes\fP (unsigned int n, unsigned char *dest, unsigned int skip, unsigned int max_retries)"
+.br
+.RI "\fICalls rdseed to fill a buffer of arbitrary size with random bytes\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBrdseed_support_cache\fP = \fBDRNG_SUPPORT_UNKNOWN\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBretry_counter\fP = 0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+APIs for rdseed library\&. 
+
+This is the rdseed library file which exposes different APIs for 32bit and 64bit system\&. 
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define RDSEED_MASK   0x40000"
+The bit mask used to examine the ebx register returned by cpuid\&. The 18th bit is set\&. 
+.SH "Function Documentation"
+.PP 
+.SS "int rdseed_16 (uint16_t * x, int retry_count)"
+
+.PP
+Calls rdseed for a 16-bit result\&. This function calls rdseed requesting a 16-bit result\&. By default, it will perform only a single call to rdseed, returning success or failure\&. On success the data is written to memory pointed to by x\&. On failure an error is returned unless the int retry_count is non-zero, in which case the function will retry rdseed until a successful result is obtained, or until the set number of retries occurs\&.
+.PP
+This function also ensures that rdseed is supported by the cpu or fails gracefully\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIx\fP pointer to memory to store the random result 
+.br
+\fIretry_count\fP int to determine how many rdseed retries should be attempted
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+whether or not the call was successful, or supported at all 
+.RE
+.PP
+
+.SS "int rdseed_32 (uint32_t * x, int retry_count)"
+
+.PP
+Calls rdseed for a 32-bit result\&. This function calls rdseed requesting a 32-bit result\&. By default, it will perform only a single call to rdseed, returning success or failure\&. On success the data is written to memory pointed to by x\&. On failure an error is returned unless the int retry_count is non-zero, in which case the function will retry rdseed until a successful result is obtained, or until the set number of retries occurs\&.
+.PP
+This function also ensures that rdseed is supported by the cpu or fails gracefully\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIx\fP pointer to memory to store the random result 
+.br
+\fIretry_count\fP int to determine how many rdseed retries should be attempted
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+whether or not the call was successful, or supported at all 
+.RE
+.PP
+
+.SS "int RdSeed_cpuid ()"
+
+.PP
+Queries cpuid to see if rdseed is supported and caches the result\&. rdseed support in a CPU is determined by examining the 18th bit of the ebx register after calling cpuid\&.
+.PP
+\fBReturns:\fP
+.RS 4
+bool of whether or not rdseed is supported 
+.RE
+.PP
+
+.SS "int rdseed_get_bytes (unsigned int n, unsigned char * buffer, unsigned int skip, unsigned int max_retries)"
+
+.PP
+Calls rdseed to fill a buffer of arbitrary size with random bytes\&. This function calls rdseed requesting multiple 64- or 32-bit results to fill a buffer of arbitrary size\&. If a call to rdseed fails to return a value this function will retry it if int max_retries is non-zero, but if the total retry count exceeds max_retries then it will return the total number of the bytes written to the buffer pointed to be x\&.
+.PP
+The int skip parameter is provided as a convenience to the user to resume filling the buffer where it left off if a previous operation did not complete\&. If it is set, the function will appended (n - skip) bytes to the end of the partially-filled buffer pointed to by x\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIn\fP size of the buffer to fill with random bytes 
+.br
+\fIbuffer\fP pointer to memory to store the random result 
+.br
+\fIskip\fP int to determine index of array to start from, to make the code re-entrant 
+.br
+\fImax_retries\fP total number of retries that will be made by multiple rdseed_32 call
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+total number or bytes generated if rdseed is supported 
+.RE
+.PP
+
+.SS "int rdseed_get_n_32 (unsigned int n, uint32_t * x, unsigned int skip, unsigned int max_retries)"
+
+.PP
+Calls rdseed to obtain multiple 32-byte results\&. This function calls rdseed requesting multiple 32-bit results\&. On success, the data is written to memory pointed to by x\&. If a call to rdseed fails to return a value this function will retry it if int max_retries is non-zero, but if the total retry count exceeds max_retries then it will return the total number of the 32-bit results it was able to generate\&.
+.PP
+The int skip parameter is provided as a convenience to the user to resume filling the buffer where it left off if a previous operation did not complete\&. If it is set, the function will appended (n - skip) values to the end of the partially-filled buffer pointed to by x\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIn\fP total number of 32-bit random seeds to generate 
+.br
+\fIx\fP pointer to memory buffer to fill with 32-bit random seeds 
+.br
+\fImax_retries\fP total number of retries that will be made by multiple rdseed_32 call 
+.br
+\fIskip\fP int to determine index of array to start from 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+total number of results generated or error number 
+.RE
+.PP
+
+.SS "int RdSeed_isSupported ()"
+
+.PP
+Determines whether or not rdseed is supported by the CPU\&. This function calls cpuid to determine rdseed support and caches the result in a static variable\&. This prevents calling cpuid on subsequent invocations\&.
+.PP
+\fBReturns:\fP
+.RS 4
+bool/int of whether or not rdseed is supported 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for DRNG Library from the source code\&.
